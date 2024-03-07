@@ -40,7 +40,8 @@ def init():
         number = rospy.get_param('/joints/' + j + '/bus')
         busname = '/servobus/' + str(number).zfill(2) + '/motorcommand'
 
-        if not bus.has_key(number):
+        # if not bus.has_key(number):
+        if number not in bus:
             bus[number] = rospy.Publisher(busname, MotorCommand, queue_size=10)
             rospy.loginfo('adding:  ' + busname)
 

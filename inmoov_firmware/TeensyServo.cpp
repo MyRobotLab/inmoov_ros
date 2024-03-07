@@ -1,6 +1,6 @@
 #include <EEPROM.h>
 #include <Servo.h>
-#include <WProgram.h>
+#include <Arduino.h>
 #include "configuration.h"
 #include "TeensyServo.h"
 #include <ros.h>

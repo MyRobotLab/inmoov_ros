@@ -54,7 +54,8 @@ def init():
 
         # and if it's not already in the bus{}, then add it
         # (not sure if the check is required)
-        if not bus.has_key(number):
+        # if not bus.has_key(number):
+        if number not in bus:
             bus[number] = rospy.Subscriber(busname, MotorStatus, dispatcher, (number))
             rospy.loginfo('adding:  ' + busname)
 
@@ -73,7 +74,7 @@ def init():
             jointstatus.name.append(j)
             jointstatus.position.append(p)
 
-        if jointstatus.name.count > 0:
+        if len(jointstatus.name) > 0:
             publisher.publish(jointstatus)
 
         joints.clear()

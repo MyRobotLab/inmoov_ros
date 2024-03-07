@@ -7,10 +7,6 @@ import rospkg
 
 import random
 
-from threading import Thread
-import thread
-import atexit
-
 from python_qt_binding import loadUi
 from python_qt_binding import QtGui
 from python_qt_binding.QtWidgets import QWidget
@@ -78,7 +74,7 @@ class ExampleApp(QtWidgets.QMainWindow, form_class):
             number = rospy.get_param('/joints/' + j + '/bus')
             busname = '/servobus/' + str(number).zfill(2) + '/motorcommand'
 
-            if not self.bus.has_key(number):
+            if number not in self.bus:
                 self.bus[number] = rospy.Publisher(busname, MotorCommand, queue_size=40)
                 rospy.loginfo('adding:  ' + busname)
 

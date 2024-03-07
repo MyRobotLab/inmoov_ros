@@ -1,5 +1,5 @@
 #include <Servo.h>
-#include <WProgram.h>
+#include <Arduino.h>
 #include "eeprom.h"
 #include "configuration.h"
 #include <ros.h>
