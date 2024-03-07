@@ -287,9 +287,9 @@ class TrainerApp(QtWidgets.QMainWindow, Ui_MainWindow):
             if   parameter == PROTOCOL.SERVOPIN:
                 s.servoPin = value
                 rospy.set_param(partial + 'servoPin', value)
-                print str(value)
-                print str(s.servoPin)
-                print rospy.get_param(partial + 'servoPin')
+                print(str(value))
+                print(str(s.servoPin))
+                print(rospy.get_param(partial + 'servoPin'))
             elif parameter == PROTOCOL.SENSORPIN:
                 s.sensorPin = value
                 rospy.set_param(partial + 'sensorPin', value)
@@ -319,7 +319,7 @@ class TrainerApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def valueChanged(self, field, parameter):
         if field.metaObject().className() == 'QLineEdit':
             if field.text() != self.values[parameter]:
-                print field.text()
+                print(field.text())
                 self.setParameter(parameter, float(field.text()))
                 self.values[parameter] = field.text()
             if field.objectName() == 'txtGoal':
@@ -435,7 +435,7 @@ class TrainerApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self.enabled = False
             self.random = False
             #self.emit_export_yaml()
-            print "GOODBYE!"
+            print("GOODBYE!")
 
 def clamp(n,minn,maxn):
     return max(min(maxn, n), minn)

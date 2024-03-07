@@ -17,7 +17,7 @@ def export_yaml(filename):
 
     outfile = os.path.join(dirname(dirname(abspath(__file__))),'config',filename)
 
-    print outfile
+    print(outfile)
 
     with open(outfile, 'w') as export:
         export.write('bringup:\n')
@@ -28,7 +28,7 @@ def export_yaml(filename):
         export.write('\n')
 
         for name in rospy.get_param('/joints'):
-            print "updating yaml for:  " +  name
+            print("updating yaml for:  " +  name)
             key = '/joints/' + name + '/'
 
             export.write(str('  ' + name + ':').ljust(20) + '\n')
@@ -61,4 +61,4 @@ def export_yaml(filename):
 
         export.close()
 
-    print "DONE"
+    print("DONE")

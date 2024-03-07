@@ -42,7 +42,7 @@ def init():
     for n,s in servos.items():
         key = ((int(s.bus)*255)+int(s.servoPin))
         lookup[key] = n
-        print 'key:  ' + str(key)
+        print('key:  ' + str(key))
 
     publisher = rospy.Publisher("joint_status", JointState, queue_size=10)
 
@@ -83,7 +83,7 @@ def init():
 
 def dispatcher(data, bus):
     try:
-        #print "OHAI! bus:" + str(bus) + " servo:" + str(data.id)
+        #print("OHAI! bus:" + str(bus) + " servo:" + str(data.id))
         key = lookup[((int(bus)*255)+int(data.id))]
         joints[key] = data.position
     except:

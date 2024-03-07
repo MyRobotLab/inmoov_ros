@@ -93,7 +93,7 @@ class ExampleApp(QtWidgets.QMainWindow, form_class):
 
         joints = rospy.get_param('/joints')
         for name, s  in self.servos.items():
-            print name
+            print(name)
             chk = QCheckBox(name)
             chk.setText(name)
             chk.setStyleSheet(checkboxstylesheet)
@@ -112,7 +112,7 @@ class ExampleApp(QtWidgets.QMainWindow, form_class):
 
     def checkChanged(self):
         sender = self.sender()
-        print sender.text()
+        print(sender.text())
 
         s = self.servos[sender.text()]
         chk = self.checkboxes[sender.text()]
@@ -127,7 +127,7 @@ class ExampleApp(QtWidgets.QMainWindow, form_class):
         #    motorcommand.value = False
         #motorcommand.value = float(chk.isChecked())
 
-        print 'checkChanged:  ' + sender.text() + 'to:  ' + str(sender.isChecked())
+        print('checkChanged:  ' + sender.text() + 'to:  ' + str(sender.isChecked()))
 
         self.bus[s.bus].publish(motorcommand)
 
@@ -147,7 +147,7 @@ class ExampleApp(QtWidgets.QMainWindow, form_class):
             motorcommand.parameter = PROTOCOL.ENABLE
             motorcommand.value = 1
 
-            #print str(j)
+            #print(str(j))
 
             self.bus[s.bus].publish(motorcommand)
             #rospy.sleep(0.1)
@@ -162,7 +162,7 @@ class ExampleApp(QtWidgets.QMainWindow, form_class):
             motorcommand.parameter = PROTOCOL.ENABLE
             motorcommand.value = 0
 
-            print j
+            print(j)
 
             self.bus[s.bus].publish(motorcommand)
             #rospy.sleep(0.1)
@@ -171,7 +171,7 @@ class ExampleApp(QtWidgets.QMainWindow, form_class):
     def closeEvent(self, event):
         self.enabled = False
         self.random = False
-        print "GOODBYE!"
+        print("GOODBYE!")
 
 checkboxstylesheet = \
     'QCheckBox::indicator {' + \

@@ -29,7 +29,7 @@ def exporter():
 
     emit_config_xacro()
 
-    print "DONE!"
+    print("DONE!")
 
 
 
@@ -44,7 +44,7 @@ def load_config_from_param():
 
     joints = rospy.get_param('/joints')
     for name in joints:
-        print "found:  " + name
+        print("found:  " + name)
 
         s = Servo()
 
@@ -68,16 +68,16 @@ def load_config_from_param():
         servos[name] = s
 
 
-    print "DONE"
+    print("DONE")
 
 def check_config():
-    print "DONE"
+    print("DONE")
 
 def update_config_from_eeprom():
 
     for name in servos:
         s = servos[name]
-        print "interrogating eeprom for:  " + name
+        print("interrogating eeprom for:  " + name)
 
         rospy.wait_for_service("servobus/" + str(s.bus).zfill(2) + "/motorparameter")
 
@@ -94,7 +94,7 @@ def update_config_from_eeprom():
         s.maxspeed  = motorparameter(int(s.servo), PROTOCOL.MAXSPEED).data
         s.smoothing = motorparameter(int(s.servo), PROTOCOL.SMOOTH).data
 
-    print "DONE"
+    print("DONE")
 
 def emit_config_xacro():
 
@@ -104,8 +104,8 @@ def emit_config_xacro():
 
     #infile = os.path.join(dirname(dirname(abspath(__file__))),'config','config.yaml')
     outfile = os.path.join(dirname(dirname(abspath(__file__))),'config','config.xacro')
-    #print infile
-    print outfile
+    #print(infile)
+    print(outfile)
 
     #y = yaml.load(open(infile, 'r'))
 
@@ -117,7 +117,7 @@ def emit_config_xacro():
 
         for name in servos:
             s = servos[name]
-            print "updating yaml for:  " +  name
+            print("updating yaml for:  " +  name)
             
             xacro.write('<xacro:property name="' + name + '_lower"    value="${pi*' + str(round(s.minangle,3)) +'/180.0}" /> \n')
             xacro.write('<xacro:property name="' + name + '_upper"    value="${pi*' + str(round(s.maxangle,3)) +'/180.0}" /> \n')
@@ -129,7 +129,7 @@ def emit_config_xacro():
 
         xacro.close()
 
-    print "DONE"
+    print("DONE")
 
 
 if __name__ == '__main__':

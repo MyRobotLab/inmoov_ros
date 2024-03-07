@@ -68,12 +68,12 @@ def init():
     rospy.spin()
 
 def dispatcher(js):
-    #print "OHAI!"
+    #print("OHAI!")
 
     # iterate through array and stuff name + position into dict object
     for x in range(0, len(js.name)):
         joints[js.name[x]] = js.position[x]
-        print"YATZEE"
+        print("YATZEE")
 
 
 

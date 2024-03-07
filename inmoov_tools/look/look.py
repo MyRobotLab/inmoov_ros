@@ -313,7 +313,7 @@ class ExampleApp(QtWidgets.QMainWindow, form_class):
 
         if self.radioBeverage.isChecked():
             #out=(float(self.sliderOut.value()) / 100.0)
-            #print out
+            #print(out)
             for servo in range (0, 12):
                 self.pose[24 + servo] = (GRABIN[servo] + ((GRABOUT[servo] - GRABIN[servo]) * out))
                 self.pose[6] = 0 + int(15.0 * out)  #lean
@@ -374,12 +374,12 @@ class ExampleApp(QtWidgets.QMainWindow, form_class):
     def setSliderY(self, event):
         self.slidery = ((float(self.sliderY.value()) / 100.0) - 0.5) * 2
         self.calcValues()
-        print self.slidery
+        print(self.slidery)
 
 
     def callback0(self, data):
         if data.id == self.servo and self.bus == 0:
-            print data.posraw
+            print(data.posraw)
             #self.chkEnabled.setChecked(bool(data.enabled))
             #self.txtPosition.setText(str(round(data.position,4)))
             #self.txtSpeed.setText(str(data.presentspeed))
@@ -472,7 +472,7 @@ class ExampleApp(QtWidgets.QMainWindow, form_class):
         self.running = False
         self.enabled = False
         self.random = False
-        print "GOODBYE!"
+        print("GOODBYE!")
 
 class Point:
     x = 0.0

@@ -1,3 +1,7 @@
+### Forked from https://github.com/alansrobotlab/inmoov_ros
+
+Thank you Alan for your work!
+
 **The xenial-kinetic branch is currently being restructured to make it easier to adapt to custom InMoov designs.**  
 
 Please check the xenial-kinetic milestones to see the direction we're heading and our status
@@ -63,3 +67,26 @@ Run the following commands:
  - node:  write node that sends joint commands to arduino through service calls
  - pose:  migrate pose module to pyqt4
  - headdemo:  migrate headdemo module to pyqt4
+
+```bash
+# install ros packages
+# FIXME diff between desktop-full and this project
+# rossserial_arduino thread ... makeit at least 3 others
+
+```bash
+# this shell
+source /opt/ros/noetic/setup.bash
+
+# all shells
+echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+
+# for catkin_ws
+source ~/catkin_ws/devel/setup.bash
+
+
+cd  ~/catkin_ws
+roslaunch inmoov_description display.launch
+
+```
+

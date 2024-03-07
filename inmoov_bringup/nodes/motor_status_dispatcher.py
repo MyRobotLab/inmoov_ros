@@ -44,7 +44,7 @@ def init():
             rospy.logwarn('motor_status_dispatcher:  unknown servo at bus:'+str(s.bus)+' servo:'+str(s.servoPin))
         
         lookup[key] = n
-        print 'key:  ' + str(key)
+        print('key:  ' + str(key))
 
     #publisher = rospy.Publisher("motor_status", MotorStatus, queue_size=10)
 

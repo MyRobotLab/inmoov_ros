@@ -32,16 +32,16 @@ def exporter():
 
     export_yaml('export.yaml')
 
-    print "DONE!"
+    print("DONE!")
 
 def check_config():
-    print "DONE"
+    print("DONE")
 
 def update_config_from_eeprom(servos):
 
     for name in servos:
         s = servos[name]
-        print "interrogating eeprom for:  " + name
+        print("interrogating eeprom for:  " + name)
 
         rospy.wait_for_service("servobus/" + str(s.bus).zfill(2) + "/motorparameter")
 
@@ -71,7 +71,7 @@ def update_config_from_eeprom(servos):
         rospy.set_param(key + 'maxSpeed', val)
 
 
-    print "DONE"
+    print("DONE")
 
 
 if __name__ == '__main__':
