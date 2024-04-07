@@ -8,7 +8,7 @@ import rospkg
 import random
 
 from threading import Thread
-import thread
+import _thread
 import atexit
 
 from python_qt_binding import loadUi
@@ -578,7 +578,7 @@ PUNCHOUTSIDE = [
              60,    #index
              45,    #thumb
              45,    #hand
-             05,    #bicep
+             5,    #bicep
             -21,    #bicep_rotate
              23,    #shoulder_side
              76,    #shoulder_up
