@@ -17,7 +17,7 @@ class JointStatusDispatcher(Node):
 
     def __init__(self):
         super().__init__('joint_status_dispatcher')
-        self.servos = load_config_from_param()
+        self.servos = load_config_from_param(self)
         self.lookup = {}
         self.joints = {}
         self.bus = {}

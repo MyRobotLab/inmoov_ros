@@ -17,7 +17,7 @@ class JointCommandDispatcher(Node):
 
     def __init__(self):
         super().__init__('joint_command_dispatcher')
-        self.servos = load_config_from_param()
+        self.servos = load_config_from_param(self)
         self.joints = {}  # dict of joint names and position values
         self.bus = {}  # dict of motorcommand busses indexed by ordinal
 
