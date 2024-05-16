@@ -147,3 +147,53 @@ cython_debug/
 
 # VS Code settings
 .vscode/
+
+# ROS2 build artifacts
+/build/
+/install/
+/log/
+
+# ROS2 colcon files
+.colcon/
+
+# ROS2 specific files
+.ros/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# MacOS specific files
+.DS_Store
+
+# Vim swap files
+*.swp
+
+# Temporary files
+*.tmp
+*.bak
+*.backup
+*.orig
+*.rej
+*.~*
+
+# Editor directories and files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Backup files
+*~
+*.bak
+*.sav
+
+# Environment specific files
+.env
+.venv
+
+# IDE specific files
+.project
+.cproject
+.settings/
+.classpath
