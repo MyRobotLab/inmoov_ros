@@ -14,7 +14,7 @@
   <author>Greg Perry</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-  <depend>rclcpp</depend>
+  <depend>rclpy</depend>
   <depend>std_msgs</depend>
   <depend>inmoov_msgs</depend>
   <depend>inmoov_description</depend>
