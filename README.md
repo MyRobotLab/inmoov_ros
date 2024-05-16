@@ -205,3 +205,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 https://github.com/paul-shuvo/iai_kinect2_opencv4
 
 ```
+
+
+```
+sudo apt install ros-humble-moveit
+```
+
+rosserial is gone ...
+
+New fancy
+https://micro.ros.org/
