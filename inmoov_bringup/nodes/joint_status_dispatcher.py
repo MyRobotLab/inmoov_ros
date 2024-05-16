@@ -69,7 +69,7 @@ class JointStatusDispatcher(Node):
             jointstatus.position.append(p)
 
         if len(jointstatus.name) > 0:
-            self.publisher.publish(jointstatus) 
+            self.publisher.publish(jointstatus)
 
         self.joints.clear()
 
