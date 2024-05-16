@@ -9,13 +9,6 @@ from inmoov_msgs.srv import MotorParameter
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Header
 
-import os
-import sys
-from os.path import dirname, abspath
-
-# hacky way to add include directory to sys path
-sys.path.append(os.path.join(dirname(dirname(abspath(__file__))),'include'))
-
 from constants import PROTOCOL
 from servos import Servo
 from load_config_from_param import load_config_from_param
