@@ -1,52 +1,48 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # licensed under BSD-3
 
 import sys
-import rospy
+import rclpy
+from rclpy.node import Node
 import yaml
 import os
 from os.path import dirname, abspath
-
-
-#hacky way to add include directory to sys path
-sys.path.append(os.path.join(dirname(dirname(abspath(__file__))),'include'))
 
 from constants import PROTOCOL
 from servos import Servo
 
 servos = {}
 
-def load_config_from_param():
+def load_config_from_param(node: Node):
 
     # first, make sure parameter server is even loaded
-    while not rospy.search_param("/joints"):
-        rospy.loginfo("waiting for parameter server to load with joint definitions")
-        rospy.sleep(1)
+    while not node.has_parameter("/joints"):
+        node.get_logger().info("waiting for parameter server to load with joint definitions")
+        node.create_rate(1).sleep()
 
-    rospy.sleep(1)
+    node.create_rate(1).sleep()
 
-    joints = rospy.get_param('/joints')
+    joints = node.get_parameter("/joints").get_parameter_value().string_value
     for name in joints:
-        rospy.loginfo( "found:  " + name )
+        node.get_logger().info("found: " + name)
 
         s = Servo()
 
         key = '/joints/' + name + '/'
 
-        s.bus       =  rospy.get_param(key + 'bus')
+        s.bus       = node.get_parameter(key + 'bus').get_parameter_value().integer_value
+        s.servoPin  = node.get_parameter(key + 'servoPin').get_parameter_value().integer_value
+        s.minPulse  = node.get_parameter(key + 'minPulse').get_parameter_value().integer_value
+        s.maxPulse  = node.get_parameter(key + 'maxPulse').get_parameter_value().integer_value
+        s.minGoal   = node.get_parameter(key + 'minGoal').get_parameter_value().integer_value
+        s.maxGoal   = node.get_parameter(key + 'maxGoal').get_parameter_value().integer_value
+        s.rest      = node.get_parameter(key + 'rest').get_parameter_value().integer_value
+        s.maxSpeed  = node.get_parameter(key + 'maxSpeed').get_parameter_value().integer_value
+        s.smoothing = node.get_parameter(key + 'smoothing').get_parameter_value().integer_value
 
-        s.servoPin  =  rospy.get_param(key + 'servoPin')
-        s.minPulse  =  rospy.get_param(key + 'minPulse')
-        s.maxPulse  =  rospy.get_param(key + 'maxPulse')
-        s.minGoal   =  rospy.get_param(key + 'minGoal')
-        s.maxGoal   =  rospy.get_param(key + 'maxGoal')
-        s.rest      =  rospy.get_param(key + 'rest')
-        s.maxSpeed  =  rospy.get_param(key + 'maxSpeed')
-        s.smoothing =  rospy.get_param(key + 'smoothing')
-
-        s.sensorpin =  rospy.get_param(key + 'sensorPin')
-        s.minSensor =  rospy.get_param(key + 'minSensor')
-        s.maxSensor =  rospy.get_param(key + 'maxSensor')
+        s.sensorpin = node.get_parameter(key + 'sensorPin').get_parameter_value().integer_value
+        s.minSensor = node.get_parameter(key + 'minSensor').get_parameter_value().integer_value
+        s.maxSensor = node.get_parameter(key + 'maxSensor').get_parameter_value().integer_value
 
         servos[name] = s
 
