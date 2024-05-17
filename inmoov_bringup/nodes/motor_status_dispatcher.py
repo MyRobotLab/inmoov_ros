@@ -1,49 +1,70 @@
 #!/usr/bin/env python3
 # licensed under BSD-3
 
-import sys
 import rclpy
 from rclpy.node import Node
-import yaml
+from inmoov_msgs.msg import MotorStatus
+from std_msgs.msg import Header
 import os
 from os.path import dirname, abspath
+import sys
+
+# Hacky way to add include directory to sys path
+sys.path.append(os.path.join(dirname(dirname(dirname(abspath(__file__)))), 'include'))
 
 from constants import PROTOCOL
 from servos import Servo
+from load_config_from_param import load_config_from_param
 
-servos = {}
+class MotorStatusDispatcher(Node):
+    def __init__(self):
+        super().__init__('motor_status_dispatcher')
+        self.servos = load_config_from_param(self)
 
-def load_config_from_param(node: Node):
+        self.lookup = {}
+        self.joints = {}
+        self.bus = {}
 
-    # first, make sure parameter server is even loaded
-    while not node.has_parameter("/joints"):
-        node.get_logger().info("waiting for parameter server to load with joint definitions")
-        node.create_rate(1).sleep()
+        # Load lookup name by (bus*255+servo id)
+        for n, s in self.servos.items():
+            try:
+                key = (int(s.bus) * 255) + int(s.servoPin)
+                self.lookup[key] = n
+                self.get_logger().info(f'key: {str(key)}')
+            except ValueError:
+                self.get_logger().warn(f'motor_status_dispatcher: unknown servo at bus: {str(s.bus)} servo: {str(s.servoPin)}')
 
-    node.create_rate(1).sleep()
+        self.publisher = self.create_publisher(MotorStatus, "motor_status", 10)
 
-    joints = node.get_parameter("/joints").get_parameter_value().string_value
-    for name in joints:
-        node.get_logger().info("found: " + name)
+        for j, b in self.get_parameter('/joints').get_parameter_value().items():
+            # Create motorstatus bus name
+            number = self.get_parameter(f'/joints/{j}/bus').get_parameter_value().integer_value
+            busname = f'/servobus/{str(number).zfill(2)}/motorstatus'
 
-        s = Servo()
+            if number not in self.bus:
+                self.bus[number] = self.create_subscription(MotorStatus, busname, lambda msg, bus=number: self.dispatcher(msg, bus), 10)
+                self.get_logger().info(f'adding: {busname}')
 
-        key = '/joints/' + name + '/'
+    def dispatcher(self, data, bus):
+        try:
+            jointname = self.lookup[(int(bus) * 255) + int(data.id)]
+            data.joint = jointname
+            data.bus = bus
+            self.publisher.publish(data)
+        except KeyError:
+            self.get_logger().warn(f'motor_status_dispatcher: unknown servo at bus: {str(bus)} servo: {str(data.id)}')
 
-        s.bus       = node.get_parameter(key + 'bus').get_parameter_value().integer_value
-        s.servoPin  = node.get_parameter(key + 'servoPin').get_parameter_value().integer_value
-        s.minPulse  = node.get_parameter(key + 'minPulse').get_parameter_value().integer_value
-        s.maxPulse  = node.get_parameter(key + 'maxPulse').get_parameter_value().integer_value
-        s.minGoal   = node.get_parameter(key + 'minGoal').get_parameter_value().integer_value
-        s.maxGoal   = node.get_parameter(key + 'maxGoal').get_parameter_value().integer_value
-        s.rest      = node.get_parameter(key + 'rest').get_parameter_value().integer_value
-        s.maxSpeed  = node.get_parameter(key + 'maxSpeed').get_parameter_value().integer_value
-        s.smoothing = node.get_parameter(key + 'smoothing').get_parameter_value().integer_value
+def main(args=None):
+    rclpy.init(args=args)
+    node = MotorStatusDispatcher()
 
-        s.sensorpin = node.get_parameter(key + 'sensorPin').get_parameter_value().integer_value
-        s.minSensor = node.get_parameter(key + 'minSensor').get_parameter_value().integer_value
-        s.maxSensor = node.get_parameter(key + 'maxSensor').get_parameter_value().integer_value
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
 
-        servos[name] = s
-
-    return servos
+if __name__ == '__main__':
+    main()

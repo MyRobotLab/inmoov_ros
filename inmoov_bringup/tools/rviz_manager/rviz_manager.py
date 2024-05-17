@@ -28,7 +28,8 @@ from load_config_from_param import load_config_from_param
 
 PI = 3.1415926539
 
-gui = os.path.join(os.path.dirname(__file__), 'rviz_manager.ui')
+# Set up the GUI path relative to the installed directory
+gui = os.path.join(dirname(abspath(__file__)), 'rviz_manager.ui')
 form_class = uic.loadUiType(gui)[0]
 
 class RVizManager(Node, QtWidgets.QMainWindow, form_class):
@@ -40,7 +41,7 @@ class RVizManager(Node, QtWidgets.QMainWindow, form_class):
 
         self.declare_parameter('bringup.angles', 'radians')
 
-        self.servos = load_config_from_param()
+        self.servos = load_config_from_param(self)
 
         self.bus = {}
         self.checkboxes = {}

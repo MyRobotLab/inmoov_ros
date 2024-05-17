@@ -26,11 +26,8 @@ from constants import PROTOCOL
 from servos import Servo
 from load_config_from_param import load_config_from_param
 
-# https://github.com/ColinDuquesnoy/QDarkStyleSheet
-# import qdarkstyle
-
-# https://www.safaribooksonline.com/blog/2014/01/22/create-basic-gui-using-pyqt/
-gui = os.path.join(os.path.dirname(__file__), 'enable_manager.ui')
+# Set up the GUI path
+gui = os.path.join(dirname(abspath(__file__)), 'enable_manager.ui')
 form_class = uic.loadUiType(gui)[0]
 
 class EnableManager(Node, QtWidgets.QMainWindow, form_class):
@@ -40,7 +37,7 @@ class EnableManager(Node, QtWidgets.QMainWindow, form_class):
         QtWidgets.QMainWindow.__init__(self)
         self.setupUi(self)
 
-        self.servos = load_config_from_param()
+        self.servos = load_config_from_param(self)
 
         self.bus = {}
         self.checkboxes = {}

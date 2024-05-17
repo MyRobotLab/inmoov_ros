@@ -36,13 +36,13 @@ install(PROGRAMS
 install(PROGRAMS
   tools/enable_manager/enable_manager.py
   tools/rviz_manager/rviz_manager.py
-  DESTINATION lib/${PROJECT_NAME}/tools
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 install(FILES
   tools/enable_manager/enable_manager.ui
   tools/rviz_manager/rviz_manager.ui
-  DESTINATION lib/${PROJECT_NAME}/tools
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 ament_package()
