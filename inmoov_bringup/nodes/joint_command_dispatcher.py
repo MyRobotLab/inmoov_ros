@@ -1,86 +1,73 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # licensed under BSD-3
 
+import rclpy
+from rclpy.node import Node
 
-import rospy
-
-from inmoov_msgs.msg import MotorStatus
-from inmoov_msgs.msg import MotorCommand
+from inmoov_msgs.msg import MotorStatus, MotorCommand
 from inmoov_msgs.srv import MotorParameter
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Header
-
-import os
-import sys
-from os.path import dirname, abspath
-
-#hacky way to add include directory to sys path
-sys.path.append(os.path.join(dirname(dirname(abspath(__file__))),'include'))
 
 from constants import PROTOCOL
 from servos import Servo
 from load_config_from_param import load_config_from_param
 
-servos = {}     # servo configuration data for robot
-joints = {}     # dict of joint names and position values
+class JointCommandDispatcher(Node):
 
-bus = {}        # dict of motorcommand busses indexed by ordinal
+    def __init__(self):
+        super().__init__('joint_command_dispatcher')
+        self.servos = load_config_from_param(self)
+        self.joints = {}  # dict of joint names and position values
+        self.bus = {}  # dict of motorcommand busses indexed by ordinal
 
-def init():
+        self.subscription = self.create_subscription(
+            JointState,
+            'joint_command',
+            self.dispatcher,
+            10
+        )
 
-    rospy.init_node('joint_command_dispatcher', anonymous=False)
-    rate = rospy.Rate(20) # 40hz
+        joints_param = self.get_parameter_or('joints', {}).get_parameter_value().string_value
+        for j, b in joints_param.items():
+            number = self.get_parameter_or(f'joints/{j}/bus', 0).get_parameter_value().integer_value
+            busname = f'/servobus/{str(number).zfill(2)}/motorcommand'
 
-    rospy.Subscriber("joint_command", JointState, dispatcher)
+            if number not in self.bus:
+                self.bus[number] = self.create_publisher(MotorCommand, busname, 10)
+                self.get_logger().info(f'adding: {busname}')
 
-    servos = load_config_from_param()
+        self.timer = self.create_timer(0.05, self.publish_motor_commands)
 
-    for j,b in rospy.get_param('/joints').items():
-        
-        number = rospy.get_param('/joints/' + j + '/bus')
-        busname = '/servobus/' + str(number).zfill(2) + '/motorcommand'
+    def dispatcher(self, js):
+        for x in range(len(js.name)):
+            self.joints[js.name[x]] = js.position[x]
+            print("YATZEE")
 
-        # if not bus.has_key(number):
-        if number not in bus:
-            bus[number] = rospy.Publisher(busname, MotorCommand, queue_size=10)
-            rospy.loginfo('adding:  ' + busname)
-
-    while not rospy.is_shutdown():
-
-        #iterate through joints and publish
-        for j,p in joints.items():
-
+    def publish_motor_commands(self):
+        for j, p in self.joints.items():
             try:
                 motorcommand = MotorCommand()
-                motorcommand.id = int(servos[j].servoPin)
+                motorcommand.id = int(self.servos[j].servoPin)
                 motorcommand.parameter = PROTOCOL.GOAL
                 motorcommand.value = p
 
-                bus[servos[j].bus].publish(motorcommand)
-            except:
-                rospy.logwarn('joint_command_dispatcher:  unknown joint:' + j)
-    
-                
+                self.bus[self.servos[j].bus].publish(motorcommand)
+            except KeyError:
+                self.get_logger().warn(f'joint_command_dispatcher: unknown joint: {j}')
+        
+        self.joints.clear()
 
-        #clear joints cache
-        joints.clear()
-        rate.sleep()
-
-    rospy.spin()
-
-def dispatcher(js):
-    #print("OHAI!")
-
-    # iterate through array and stuff name + position into dict object
-    for x in range(0, len(js.name)):
-        joints[js.name[x]] = js.position[x]
-        print("YATZEE")
-
-
-
+def main(args=None):
+    rclpy.init(args=args)
+    joint_command_dispatcher = JointCommandDispatcher()
+    try:
+        rclpy.spin(joint_command_dispatcher)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        joint_command_dispatcher.destroy_node()
+        rclpy.shutdown()
 
 if __name__ == '__main__':
-    try:
-        init()
-    except rospy.ROSInterruptException:
-        pass
+    main()

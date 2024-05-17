@@ -3,7 +3,7 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
 
   <xacro:property name="filename" value="$(find inmoov_bringup)/config/config.yaml"/>
-  <xacro:property name="c" value="${load_yaml(filename)}"/>
+  <xacro:property name="c" value="${xacro.load_yaml(filename)}"/>
 
   <!--xacro:property name="pi" value="3.1415926539"/-->
 
